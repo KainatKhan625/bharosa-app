@@ -1,2 +1,2 @@
-# ustaad-app
+# bharosa-app
 Home Services App - Pakistan
