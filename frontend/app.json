@@ -1,0 +1,31 @@
+{
+  "expo": {
+    "name": "Bharosa",
+    "slug": "bharosa-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#6C63FF"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.bharosa.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#6C63FF"
+      },
+      "edgeToEdgeEnabled": true,
+      "package": "com.bharosa.app"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}
