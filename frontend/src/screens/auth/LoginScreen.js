@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { loginUser } from '../../api/authApi';
 import { colors, typography, layout } from '../../theme/colors';
+import { saveToken, saveUser } from '../../utils/storage';
 
 export default function LoginScreen({ navigation }) {
   const [showPassword, setShowPassword] = useState(false);
@@ -23,6 +24,8 @@ export default function LoginScreen({ navigation }) {
     try {
       setLoading(true);
       const response = await loginUser(formData);
+      await saveToken(response.token); 
+await saveUser(response.user); 
       if (response.user.role === 'customer') {
         navigation.navigate('CustomerHome');
       } else if (response.user.role === 'worker') {
@@ -99,14 +102,11 @@ export default function LoginScreen({ navigation }) {
       </TouchableOpacity>
 
       {/* Register Link */}
-      <Text style={[typography.subtitle, { textAlign: 'center', marginBottom: 6 }]}>
-        Don't have an account?
-      </Text>
-      <TouchableOpacity
-        style={layout.outlineButton}
-        onPress={() => navigation.navigate('Register')}>
-        <Text style={typography.link}>Create an Account</Text>
-      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+  <Text style={[typography.subtitle, { textAlign: 'center' }]}>
+    Don't have an account? <Text style={typography.link}>Create an Account</Text>
+  </Text>
+</TouchableOpacity>
 
     </ScrollView>
   );

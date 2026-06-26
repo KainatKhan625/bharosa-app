@@ -9,6 +9,7 @@ import { registerUser } from '../../api/authApi';
 import { colors, typography, layout } from '../../theme/colors';
 import { Ionicons } from '@expo/vector-icons';
 import { Platform } from 'react-native';
+import { saveToken, saveUser } from '../../utils/storage';
 
 export default function RegisterScreen({ navigation }) {
   const [showPassword, setShowPassword] = useState(false);
@@ -35,6 +36,8 @@ export default function RegisterScreen({ navigation }) {
     try {
       setLoading(true);
       const response = await registerUser(formData);
+      await saveToken(response.token);  
+await saveUser(response.user); 
       Alert.alert('Success', 'Registration successful!');
       if (response.user.role === 'customer') {
         navigation.navigate('CustomerHome');
@@ -178,12 +181,13 @@ export default function RegisterScreen({ navigation }) {
           <Text style={layout.buttonText}>Register</Text>}
       </TouchableOpacity>
 
-      <Text style={[typography.subtitle, { textAlign: 'center', marginBottom: 6 }]}>
-        Already have an account?
-      </Text>
-      <TouchableOpacity style={layout.outlineButton} onPress={() => navigation.navigate('Login')}>
-        <Text style={typography.link}>Login</Text>
+      {/* Login Link */}
+      <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+        <Text style={[typography.subtitle, { textAlign: 'center' }]}>
+          Already have an account? <Text style={typography.link}>Login</Text>
+        </Text>
       </TouchableOpacity>
+     
 
     </ScrollView>
   );

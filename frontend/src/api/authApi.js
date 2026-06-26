@@ -1,30 +1,44 @@
 // authApi.js
 // All authentication API calls are defined here
-// Frontend uses these functions to talk to backend
 
 import axios from 'axios';
+import { Platform } from 'react-native';
 
-// Backend URL loaded from .env file
-const BASE_URL = process.env.EXPO_PUBLIC_API_URL;
+// Use localhost for web browser, IP for mobile
+const BASE_URL = Platform.OS === 'web'
+  ? 'http://localhost:5000/api'
+  : process.env.EXPO_PUBLIC_API_URL;
 
 // Register new user
-// Sends user data to backend, returns token + user info
 export const registerUser = async (userData) => {
   try {
     const response = await axios.post(`${BASE_URL}/auth/register`, userData);
     return response.data;
   } catch (error) {
-    throw error.response.data;
+    // Better error handling
+    if (error.response) {
+      throw error.response.data;
+    } else if (error.request) {
+      // Network error — backend se connection nahi
+      throw { message: 'Cannot connect to server. Check your internet!' };
+    } else {
+      throw { message: error.message };
+    }
   }
 };
 
 // Login existing user
-// Sends email & password, returns token + user info
 export const loginUser = async (credentials) => {
   try {
     const response = await axios.post(`${BASE_URL}/auth/login`, credentials);
     return response.data;
   } catch (error) {
-    throw error.response.data;
+    if (error.response) {
+      throw error.response.data;
+    } else if (error.request) {
+      throw { message: 'Cannot connect to server. Check your internet!' };
+    } else {
+      throw { message: error.message };
+    }
   }
 };
