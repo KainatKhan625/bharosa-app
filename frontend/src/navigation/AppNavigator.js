@@ -11,6 +11,8 @@ import { useState, useEffect } from 'react';
 import { View, ActivityIndicator } from 'react-native';
 import { getToken, getUser } from '../utils/storage';
 import { colors } from '../theme/colors';
+import ProfileScreen from '../screens/customer/ProfileScreen';
+import WorkerProfileSettingsScreen from '../screens/worker/WorkerProfileSettingsScreen';
 
 // Auth Screens
 import LoginScreen from '../screens/auth/LoginScreen';
@@ -43,16 +45,16 @@ function CustomerTabs() {
           let iconName;
           if (route.name === 'Home') iconName = 'home-outline';
           else if (route.name === 'MyBookings') iconName = 'calendar-outline';
+          else if (route.name === 'Profile') iconName = 'person-outline';
           return <Ionicons name={iconName} size={size} color={color} />;
         },
       })}>
       <Tab.Screen name="Home" component={CustomerHomeScreen} />
       <Tab.Screen name="MyBookings" component={MyBookingsScreen} options={{ title: 'My Bookings' }} />
+      <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );
 }
-
-// Worker bottom tabs
 function WorkerTabs() {
   return (
     <Tab.Navigator
@@ -63,10 +65,12 @@ function WorkerTabs() {
         tabBarIcon: ({ color, size }) => {
           let iconName;
           if (route.name === 'Dashboard') iconName = 'grid-outline';
+          else if (route.name === 'Profile') iconName = 'person-outline';
           return <Ionicons name={iconName} size={size} color={color} />;
         },
       })}>
       <Tab.Screen name="Dashboard" component={WorkerDashboardScreen} />
+      <Tab.Screen name="Profile" component={WorkerProfileSettingsScreen} />
     </Tab.Navigator>
   );
 }

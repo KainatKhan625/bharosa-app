@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { loginUser } from '../../api/authApi';
 import { colors, typography, layout } from '../../theme/colors';
-import { saveToken, saveUser } from '../../utils/storage';
+import { saveToken, saveUser, clearStorage } from '../../utils/storage';
 
 export default function LoginScreen({ navigation }) {
   const [showPassword, setShowPassword] = useState(false);
@@ -23,6 +23,7 @@ export default function LoginScreen({ navigation }) {
     }
     try {
       setLoading(true);
+      await clearStorage(); 
       const response = await loginUser(formData);
       await saveToken(response.token); 
 await saveUser(response.user); 
