@@ -13,6 +13,9 @@ import { getToken, getUser } from '../utils/storage';
 import { colors } from '../theme/colors';
 import ProfileScreen from '../screens/customer/ProfileScreen';
 import WorkerProfileSettingsScreen from '../screens/worker/WorkerProfileSettingsScreen';
+import SplashScreen from '../screens/onboarding/SplashScreen';
+import OnboardingScreen from '../screens/onboarding/OnboardingScreen';
+import AddReviewScreen from '../screens/customer/AddReviewScreen';
 
 // Auth Screens
 import LoginScreen from '../screens/auth/LoginScreen';
@@ -77,7 +80,7 @@ function WorkerTabs() {
 
 export default function AppNavigator() {
   const [isLoading, setIsLoading] = useState(true);
-  const [initialRoute, setInitialRoute] = useState('Login');
+  const [initialRoute, setInitialRoute] = useState('Splash');
 
   // Check token on app startup
   useEffect(() => {
@@ -116,6 +119,8 @@ export default function AppNavigator() {
       <Stack.Navigator
         initialRouteName={initialRoute}
         screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Splash" component={SplashScreen} />
+<Stack.Screen name="Onboarding" component={OnboardingScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="CustomerHome" component={CustomerTabs} />
@@ -123,6 +128,7 @@ export default function AppNavigator() {
         <Stack.Screen name="Booking" component={BookingScreen} />
         <Stack.Screen name="WorkerDashboard" component={WorkerTabs} />
         <Stack.Screen name="AdminPanel" component={AdminPanelScreen} />
+        <Stack.Screen name="AddReview" component={AddReviewScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

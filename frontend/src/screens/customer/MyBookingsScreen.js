@@ -3,7 +3,7 @@
 // Customer can track booking status
 
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { Platform } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
@@ -15,20 +15,18 @@ const BASE_URL = Platform.OS === 'web'
   ? 'http://localhost:5000/api'
   : process.env.EXPO_PUBLIC_API_URL;
 
-// Status colors and icons
 const STATUS_CONFIG = {
-  pending:   { color: '#F59E0B', bg: '#FFFBEB', icon: 'time-outline',           label: 'Pending' },
+  pending:   { color: '#F59E0B', bg: '#FFFBEB', icon: 'time-outline',            label: 'Pending' },
   accepted:  { color: '#2563EB', bg: '#EFF6FF', icon: 'checkmark-circle-outline', label: 'Accepted' },
-  rejected:  { color: '#EF4444', bg: '#FEF2F2', icon: 'close-circle-outline',   label: 'Rejected' },
-  completed: { color: '#10B981', bg: '#ECFDF5', icon: 'checkmark-done-outline', label: 'Completed' },
-  cancelled: { color: '#6B7280', bg: '#F9FAFB', icon: 'ban-outline',            label: 'Cancelled' },
+  rejected:  { color: '#EF4444', bg: '#FEF2F2', icon: 'close-circle-outline',    label: 'Rejected' },
+  completed: { color: '#10B981', bg: '#ECFDF5', icon: 'checkmark-done-outline',  label: 'Completed' },
+  cancelled: { color: '#6B7280', bg: '#F9FAFB', icon: 'ban-outline',             label: 'Cancelled' },
 };
 
 export default function MyBookingsScreen({ navigation }) {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Refresh bookings every time screen is focused
   useFocusEffect(
     useCallback(() => {
       fetchBookings();
@@ -50,7 +48,6 @@ export default function MyBookingsScreen({ navigation }) {
     }
   };
 
-  // Cancel booking
   const handleCancel = async (bookingId) => {
     Alert.alert(
       'Cancel Booking',
@@ -77,6 +74,7 @@ export default function MyBookingsScreen({ navigation }) {
     );
   };
 
+  // Booking card component
   const BookingCard = ({ booking }) => {
     const config = STATUS_CONFIG[booking.status] || STATUS_CONFIG.pending;
 
@@ -132,6 +130,16 @@ export default function MyBookingsScreen({ navigation }) {
             style={styles.cancelBtn}
             onPress={() => handleCancel(booking.id)}>
             <Text style={styles.cancelBtnText}>Cancel Booking</Text>
+          </TouchableOpacity>
+        )}
+
+        {/* Review Button — only for completed bookings */}
+        {booking.status === 'completed' && (
+          <TouchableOpacity
+            style={styles.reviewBtn}
+            onPress={() => navigation.navigate('AddReview', { booking })}>
+            <Ionicons name="star-outline" size={14} color={colors.primary} />
+            <Text style={styles.reviewBtnText}>Add Review</Text>
           </TouchableOpacity>
         )}
 
@@ -259,6 +267,22 @@ const styles = {
   cancelBtnText: {
     fontSize: 13,
     color: '#EF4444',
+    fontWeight: '500',
+  },
+  reviewBtn: {
+    marginTop: 10,
+    borderWidth: 1.5,
+    borderColor: colors.primary,
+    borderRadius: 8,
+    padding: 8,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 6,
+  },
+  reviewBtnText: {
+    fontSize: 13,
+    color: colors.primary,
     fontWeight: '500',
   },
   emptyBox: {
