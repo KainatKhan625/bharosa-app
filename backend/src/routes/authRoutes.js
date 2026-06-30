@@ -1,17 +1,20 @@
 // authRoutes.js
 // Defines which URL triggers which function
-// Example: POST /api/auth/register → calls register function
 
 const express = require('express');
-const router = express.Router(); // Mini router — handles only auth routes
-const { register, login } = require('../controllers/authController'); // Import functions from controller
+const router = express.Router();
+const { register, login, sendOtp, verifyOtpAndReset } = require('../controllers/authController');
 
 // POST /api/auth/register
-// Called when user submits the register form
 router.post('/register', register);
 
 // POST /api/auth/login
-// Called when user submits the login form
 router.post('/login', login);
 
-module.exports = router; // Export for use in server.js
+// POST /api/auth/send-otp — sends OTP to email
+router.post('/send-otp', sendOtp);
+
+// POST /api/auth/verify-otp — verifies OTP and resets password
+router.post('/verify-otp', verifyOtpAndReset);
+
+module.exports = router;

@@ -17,6 +17,7 @@ import SplashScreen from '../screens/onboarding/SplashScreen';
 import OnboardingScreen from '../screens/onboarding/OnboardingScreen';
 import AddReviewScreen from '../screens/customer/AddReviewScreen';
 import WorkerEditProfileScreen from '../screens/worker/WorkerEditProfileScreen';
+import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen';
 
 // Auth Screens
 import LoginScreen from '../screens/auth/LoginScreen';
@@ -131,6 +132,7 @@ export default function AppNavigator() {
         <Stack.Screen name="AdminPanel" component={AdminPanelScreen} />
         <Stack.Screen name="AddReview" component={AddReviewScreen} />
         <Stack.Screen name="WorkerEditProfile" component={WorkerEditProfileScreen} />
+        <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

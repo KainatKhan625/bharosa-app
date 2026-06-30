@@ -67,9 +67,9 @@ await saveUser(response.user);
       <View style={layout.fieldGroup}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
           <Text style={typography.label}>Password</Text>
-          <TouchableOpacity>
-            <Text style={typography.link}>Forgot Password?</Text>
-          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
+  <Text style={typography.link}>Forgot Password?</Text>
+</TouchableOpacity>
         </View>
         <View style={layout.passwordContainer}>
           <TextInput
