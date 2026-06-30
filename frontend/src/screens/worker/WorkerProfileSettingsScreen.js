@@ -75,15 +75,17 @@ export default function WorkerProfileSettingsScreen({ navigation }) {
 
       <View style={{ paddingHorizontal: 20 }}>
 
-        <TouchableOpacity style={{
-          flexDirection: 'row', alignItems: 'center', gap: 14,
-          padding: 16, backgroundColor: '#F9FAFB',
-          borderRadius: 12, marginBottom: 10,
-        }}>
-          <Ionicons name="person-outline" size={20} color={colors.primary} />
-          <Text style={{ fontSize: 14, color: '#374151', fontWeight: '500' }}>Edit Profile</Text>
-          <Ionicons name="chevron-forward" size={18} color="#9CA3AF" style={{ marginLeft: 'auto' }} />
-        </TouchableOpacity>
+        <TouchableOpacity 
+  onPress={() => navigation.navigate('WorkerEditProfile')}
+  style={{
+    flexDirection: 'row', alignItems: 'center', gap: 14,
+    padding: 16, backgroundColor: '#F9FAFB',
+    borderRadius: 12, marginBottom: 10,
+  }}>
+  <Ionicons name="person-outline" size={20} color={colors.primary} />
+  <Text style={{ fontSize: 14, color: '#374151', fontWeight: '500' }}>Edit Profile</Text>
+  <Ionicons name="chevron-forward" size={18} color="#9CA3AF" style={{ marginLeft: 'auto' }} />
+</TouchableOpacity>
 
         <TouchableOpacity style={{
           flexDirection: 'row', alignItems: 'center', gap: 14,

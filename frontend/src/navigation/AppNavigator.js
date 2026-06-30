@@ -16,6 +16,7 @@ import WorkerProfileSettingsScreen from '../screens/worker/WorkerProfileSettings
 import SplashScreen from '../screens/onboarding/SplashScreen';
 import OnboardingScreen from '../screens/onboarding/OnboardingScreen';
 import AddReviewScreen from '../screens/customer/AddReviewScreen';
+import WorkerEditProfileScreen from '../screens/worker/WorkerEditProfileScreen';
 
 // Auth Screens
 import LoginScreen from '../screens/auth/LoginScreen';
@@ -129,6 +130,7 @@ export default function AppNavigator() {
         <Stack.Screen name="WorkerDashboard" component={WorkerTabs} />
         <Stack.Screen name="AdminPanel" component={AdminPanelScreen} />
         <Stack.Screen name="AddReview" component={AddReviewScreen} />
+        <Stack.Screen name="WorkerEditProfile" component={WorkerEditProfileScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
