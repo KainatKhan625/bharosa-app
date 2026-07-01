@@ -1,16 +1,13 @@
 // workerController.js
 // Handles all worker related operations
-// Get workers, filter by service/city, get worker profile
+// Get workers, filter by service/city, search, get worker profile
 
 const pool = require('../db');
 
-// Get all available workers with optional filters
-// Used on Customer Home Screen to browse workers
+// Get all available workers with optional filters + search
 const getWorkers = async (req, res) => {
   try {
-    // Get filter values from URL query params
-    // Example: /api/workers?service_type=plumber&city=karachi
-    const { service_type, city, min_rating } = req.query;
+    const { service_type, city, min_rating, search } = req.query;
 
     let query = `
       SELECT 
@@ -34,7 +31,6 @@ const getWorkers = async (req, res) => {
       AND w.is_available = TRUE
     `;
 
-    // Dynamic filters — only add if provided
     const values = [];
     let paramCount = 1;
 
@@ -56,6 +52,13 @@ const getWorkers = async (req, res) => {
       paramCount++;
     }
 
+    // Search by service type only — not name
+if (search) {
+  query += ` AND w.service_type ILIKE $${paramCount}`;
+  values.push(`%${search}%`);
+  paramCount++;
+}
+
     query += ` ORDER BY w.avg_rating DESC`;
 
     const result = await pool.query(query, values);
@@ -73,7 +76,6 @@ const getWorkers = async (req, res) => {
 };
 
 // Get single worker profile by ID
-// Used on Worker Profile Screen
 const getWorkerById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -119,11 +121,10 @@ const getWorkerById = async (req, res) => {
 };
 
 // Update worker profile
-// Worker can update their bio, hourly rate, availability
 const updateWorkerProfile = async (req, res) => {
   try {
-    const { bio, hourly_rate, experience_years, area, is_available } = req.body;
-    const userId = req.user.id; // From JWT token via middleware
+    const { bio, hourly_rate, experience_years, area, whatsapp, services_offered, is_available } = req.body;
+    const userId = req.user.id;
 
     const result = await pool.query(`
       UPDATE workers 
@@ -132,10 +133,12 @@ const updateWorkerProfile = async (req, res) => {
         hourly_rate = COALESCE($2, hourly_rate),
         experience_years = COALESCE($3, experience_years),
         area = COALESCE($4, area),
-        is_available = COALESCE($5, is_available)
-      WHERE user_id = $6
+        whatsapp = COALESCE($5, whatsapp),
+        services_offered = COALESCE($6, services_offered),
+        is_available = $7
+      WHERE user_id = $8
       RETURNING *
-    `, [bio, hourly_rate, experience_years, area, is_available, userId]);
+    `, [bio, hourly_rate, experience_years, area, whatsapp, services_offered, is_available, userId]);
 
     res.status(200).json({
       message: 'Profile updated!',

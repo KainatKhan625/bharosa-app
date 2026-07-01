@@ -26,29 +26,36 @@ export default function CustomerHomeScreen({ navigation }) {
   const [loading, setLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [searchText, setSearchText] = useState('');
+  const [showFilter, setShowFilter] = useState(false);
+const [selectedCity, setSelectedCity] = useState(null);
+const [minRating, setMinRating] = useState(null);
 
   // Fetch workers when screen loads or category changes
   useEffect(() => {
-    fetchWorkers();
-  }, [selectedCategory]);
+  fetchWorkers();
+}, [selectedCategory, searchText, selectedCity, minRating]);
 
   // Fetch workers from backend API
   const fetchWorkers = async () => {
-    try {
-      setLoading(true);
-      let url = `${BASE_URL}/workers`;
-      if (selectedCategory) {
-        url += `?service_type=${selectedCategory}`;
-      }
-      const response = await axios.get(url);
-      setWorkers(response.data.workers);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    setLoading(true);
+    let url = `${BASE_URL}/workers`;
+    
+    const params = [];
+    if (selectedCategory) params.push(`service_type=${selectedCategory}`);
+    if (searchText) params.push(`search=${searchText}`);
+    if (selectedCity) params.push(`city=${selectedCity}`);
+    if (minRating) params.push(`min_rating=${minRating}`);
+    if (params.length > 0) url += `?${params.join('&')}`;
 
+    const response = await axios.get(url);
+    setWorkers(response.data.workers);
+  } catch (err) {
+    console.error(err);
+  } finally {
+    setLoading(false);
+  }
+};
   // Single worker card component
   const WorkerCard = ({ worker }) => (
     <TouchableOpacity
@@ -97,16 +104,19 @@ export default function CustomerHomeScreen({ navigation }) {
       </View>
 
       {/* Search Bar */}
-      <View style={styles.searchContainer}>
-        <Ionicons name="search-outline" size={20} color={colors.textLight} />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search for a service..."
-          placeholderTextColor={colors.textLight}
-          value={searchText}
-          onChangeText={setSearchText}
-        />
-      </View>
+<View style={styles.searchContainer}>
+  <Ionicons name="search-outline" size={20} color={colors.textLight} />
+  <TextInput
+    style={styles.searchInput}
+    placeholder="Search for a service..."
+    placeholderTextColor={colors.textLight}
+    value={searchText}
+    onChangeText={setSearchText}
+  />
+  <TouchableOpacity onPress={() => setShowFilter(true)}>
+    <Ionicons name="options-outline" size={22} color={colors.primary} />
+  </TouchableOpacity>
+</View>
 
       {/* Service Categories */}
       <Text style={styles.sectionTitle}>Categories</Text>
@@ -156,6 +166,106 @@ export default function CustomerHomeScreen({ navigation }) {
           <WorkerCard key={worker.id} worker={worker} />
         ))
       )}
+
+      {/* Filter Modal */}
+{showFilter && (
+  <View style={{
+    position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'flex-end',
+  }}>
+    <View style={{
+      backgroundColor: colors.white,
+      borderTopLeftRadius: 20,
+      borderTopRightRadius: 20,
+      padding: 24,
+    }}>
+      <Text style={{ fontSize: 18, fontWeight: 'bold', color: colors.textDark, marginBottom: 20 }}>
+        Filter Workers
+      </Text>
+
+      {/* City Filter */}
+      <Text style={{ fontSize: 14, fontWeight: '500', color: colors.textDark, marginBottom: 10 }}>
+        City
+      </Text>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 20 }}>
+        {['karachi', 'lahore', 'islamabad', 'rawalpindi', 'peshawar'].map((city) => (
+          <TouchableOpacity
+            key={city}
+            onPress={() => setSelectedCity(selectedCity === city ? null : city)}
+            style={{
+              paddingHorizontal: 14, paddingVertical: 8,
+              borderRadius: 20, borderWidth: 1.5,
+              borderColor: selectedCity === city ? colors.primary : colors.inputBorder,
+              backgroundColor: selectedCity === city ? colors.primaryLight : colors.white,
+            }}>
+            <Text style={{
+              fontSize: 13, textTransform: 'capitalize',
+              color: selectedCity === city ? colors.primary : colors.textMedium,
+              fontWeight: selectedCity === city ? '600' : '400',
+            }}>
+              {city}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      {/* Rating Filter */}
+      <Text style={{ fontSize: 14, fontWeight: '500', color: colors.textDark, marginBottom: 10 }}>
+        Minimum Rating
+      </Text>
+      <View style={{ flexDirection: 'row', gap: 8, marginBottom: 24 }}>
+        {[3, 4, 5].map((rating) => (
+          <TouchableOpacity
+            key={rating}
+            onPress={() => setMinRating(minRating === rating ? null : rating)}
+            style={{
+              paddingHorizontal: 14, paddingVertical: 8,
+              borderRadius: 20, borderWidth: 1.5,
+              borderColor: minRating === rating ? colors.primary : colors.inputBorder,
+              backgroundColor: minRating === rating ? colors.primaryLight : colors.white,
+              flexDirection: 'row', alignItems: 'center', gap: 4,
+            }}>
+            <Ionicons name="star" size={14} color={minRating === rating ? colors.primary : '#F59E0B'} />
+            <Text style={{
+              fontSize: 13,
+              color: minRating === rating ? colors.primary : colors.textMedium,
+              fontWeight: minRating === rating ? '600' : '400',
+            }}>
+              {rating}+
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      {/* Buttons */}
+      <View style={{ flexDirection: 'row', gap: 12 }}>
+        <TouchableOpacity
+          onPress={() => {
+            setSelectedCity(null);
+            setMinRating(null);
+            setShowFilter(false);
+          }}
+          style={{
+            flex: 1, padding: 14, borderRadius: 12,
+            borderWidth: 1.5, borderColor: colors.inputBorder,
+            alignItems: 'center',
+          }}>
+          <Text style={{ color: colors.textMedium, fontWeight: '500' }}>Clear</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => setShowFilter(false)}
+          style={{
+            flex: 1, padding: 14, borderRadius: 12,
+            backgroundColor: colors.primary, alignItems: 'center',
+          }}>
+          <Text style={{ color: colors.white, fontWeight: '600' }}>Apply</Text>
+        </TouchableOpacity>
+      </View>
+
+    </View>
+  </View>
+)}
 
     </ScrollView>
   );
